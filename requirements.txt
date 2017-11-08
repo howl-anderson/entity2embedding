@@ -1,4 +1,4 @@
 tensorflow
 scikit-learn
 scipy
-typing; python_version < "3.4"
+typing; python_version < "3"
