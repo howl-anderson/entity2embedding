@@ -14,7 +14,7 @@ if PY2:
 
 setup(
     name='entity2vec',
-    version='0.1',
+    version='0.1.1',
     packages=['entity2vec'],
     url='',
     license='LGPL',
