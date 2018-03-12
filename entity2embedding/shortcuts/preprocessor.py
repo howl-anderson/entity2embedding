@@ -3,12 +3,12 @@ import os
 import pprint
 import shutil
 
-from entity2vec.corpora.builder.LineBasedCorporaBatchBuilder import \
+from entity2embedding.corpora.builder.LineBasedCorporaBatchBuilder import \
     LineBasedCorporaBatchBuilder
-from entity2vec.corpora.preprocessor.TextBasedPreprocessor import \
+from entity2embedding.corpora.preprocessor.TextBasedPreprocessor import \
     TextBasedPreprocessor
-from entity2vec.shortcuts.utils import load_project_structure, build_config
-from entity2vec.utils import list_unhidden_file_in_dir
+from entity2embedding.shortcuts.utils import load_project_structure, build_config
+from entity2embedding.utils import list_unhidden_file_in_dir
 
 
 def create_argparser():

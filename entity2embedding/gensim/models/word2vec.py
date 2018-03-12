@@ -9,13 +9,13 @@ from datetime import datetime
 
 import tensorflow as tf
 
-from entity2vec.corpora.builder.LineBasedCorporaBatchBuilder import \
+from entity2embedding.corpora.builder.LineBasedCorporaBatchBuilder import \
     LineBasedCorporaBatchBuilder
-from entity2vec.corpora.loader import TFRecordBasedCorporaLoader
-from entity2vec.corpora.preprocessor.TextBasedPreprocessor import \
+from entity2embedding.corpora.loader import TFRecordBasedCorporaLoader
+from entity2embedding.corpora.preprocessor.TextBasedPreprocessor import \
     TextBasedPreprocessor
-from entity2vec.corpora.loader.CorporaInitializer import CorporaInitializer
-from entity2vec.word2vec.skip_gram.basic import BasicWord2vec
+from entity2embedding.corpora.loader.CorporaInitializer import CorporaInitializer
+from entity2embedding.word2vec.skip_gram.basic import BasicWord2vec
 
 
 class _DefaultOptionValue(object):

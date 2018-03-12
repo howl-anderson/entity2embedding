@@ -7,8 +7,8 @@ import pprint
 
 import tensorflow as tf
 
-from entity2vec.shortcuts.utils import load_project_structure, build_config
-from entity2vec.word2vec.skip_gram.basic import BasicWord2vec
+from entity2embedding.shortcuts.utils import load_project_structure, build_config
+from entity2embedding.word2vec.skip_gram.basic import BasicWord2vec
 
 
 def create_argparser():

@@ -9,11 +9,11 @@ import pprint
 
 import tensorflow as tf
 
-from entity2vec.corpora.loader.CorporaInitializer import CorporaInitializer
-from entity2vec.corpora.loader import TFRecordBasedCorporaLoader
-from entity2vec.word2vec.skip_gram.basic import BasicWord2vec
-from entity2vec.shortcuts.utils import load_project_structure, build_config
-from entity2vec.utils import list_unhidden_file_in_dir, dict_to_namedtuple
+from entity2embedding.corpora.loader.CorporaInitializer import CorporaInitializer
+from entity2embedding.corpora.loader import TFRecordBasedCorporaLoader
+from entity2embedding.word2vec.skip_gram.basic import BasicWord2vec
+from entity2embedding.shortcuts.utils import load_project_structure, build_config
+from entity2embedding.utils import list_unhidden_file_in_dir, dict_to_namedtuple
 
 
 def create_argparser():

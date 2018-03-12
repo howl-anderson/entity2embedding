@@ -1,7 +1,7 @@
 import json
 import os
 
-from entity2vec.utils import make_dir_recursive
+from entity2embedding.utils import make_dir_recursive
 
 
 def load_project_structure(project_dir, create=True):

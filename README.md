@@ -1,4 +1,4 @@
-# Entity2Vec
+# Entity2Embedding
 
 基于 `TensorFlow` 的 `Word2vec` / `Thing2Vec` 的Python package.
 
@@ -28,7 +28,7 @@
 ![distance](.images/distance.png)
 
 ## 教程
-如下将通过Google官方的text8数据集来演示 `Entity2Vec`的使用
+如下将通过Google官方的text8数据集来演示 `Entity2Embedding`的使用
 ### 下载数据
 下载`text8`数据集, 执行下面的命令
 ```bash
@@ -39,13 +39,13 @@ unzip text8.zip
 ### 构建项目
 执行下面的命令:
 ```bash
-python -m entity2vec.shortcuts.preprocessor -p project -f text8
+python -m entity2embedding.shortcuts.preprocessor -p project -f text8
 ```
 这个脚本将使用默认的设定来构建项目, `-f text8`指定了数据来源于`text8`, `-p project`指定了项目文件存放的位置`project`目录
 ### 训练模型
 执行下面的命令:
 ```bash
-python -m entity2vec.shortcuts.train -p project
+python -m entity2embedding.shortcuts.train -p project
 ```
 这个脚本将使用默认的设定来训练模型, `-p project`指定了项目的位置在`project`目录中.
 ### 可视化监控
@@ -58,6 +58,6 @@ tensorboard --logdir project/log
 ### 导出模型
 执行下面的命令:
 ```bash
-python -m entity2vec.shortcuts.export -p project
+python -m entity2embedding.shortcuts.export -p project
 ```
 模型数据将会以兼容`gensim`包的格式导出纯文本模型,模型文件`gensim_compatible_word2vec.txt`位于`project`目录中

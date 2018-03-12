@@ -13,9 +13,9 @@ if PY2:
     required_packages.append("typing")
 
 setup(
-    name='entity2vec',
+    name='entity2embedding',
     version='0.1.1',
-    packages=['entity2vec'],
+    packages=['entity2embedding'],
     url='',
     license='LGPL',
     author='Xiaoquan Kong',

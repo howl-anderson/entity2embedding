@@ -14,11 +14,11 @@ from typing import (
     List, AnyStr
 )
 
-from entity2vec.corpora.builder.LineBasedCorporaBuilder import \
+from entity2embedding.corpora.builder.LineBasedCorporaBuilder import \
     LineBasedCorporaBuilder
-from entity2vec.corpora.builder.ContextWindowBasedLineProcessor import \
+from entity2embedding.corpora.builder.ContextWindowBasedLineProcessor import \
     ContextWindowBasedLineProcessor
-from entity2vec.corpora.builder.TFRecordExporter import \
+from entity2embedding.corpora.builder.TFRecordExporter import \
     TFRecordExporter
 
 CURRENT_DIR = os.path.dirname(
