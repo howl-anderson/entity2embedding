@@ -11,6 +11,10 @@ except ImportError:
 
 
 class TextBasedPreprocessor(object):
+    """
+    1. Turn word-based corpora into index-based (number) corpora,
+    2. Word count below min_count will be treat as a special value.
+    """
     def __init__(self, corpora_file_list,
                  vocabulary_size=None, output_dir="./output", metadata_file=None, min_count=None):
         # TODO: fix me: metadata_file=None don't work at all!
@@ -35,7 +39,11 @@ class TextBasedPreprocessor(object):
         self.metadata_output_file = metadata_file
 
         self._index_to_word_map = None
+
+        # mapping word to index, index count from 0: "some-word" => 1
         self._word_to_index_map = dict()
+
+        # mapping index to word_count
         self._index_to_word_count_list = []
 
     def build(self):
@@ -57,10 +65,13 @@ class TextBasedPreprocessor(object):
         #     _build_word_to_index_map_worker_func_wrapper,
         #     self.corpora_file_list)
 
+        # TODO: counter + counter is slow, using update maybe better
         counter = functools.reduce(lambda x, y: x + y, counter_list)
 
+        # add special word 'UNK' stand for unknown words, assign -1 as it's count
         count = [['UNK', -1]]
 
+        # get real vocabulary by settings
         if self._vocabulary_size:
             vocab_counter = counter.most_common(self._vocabulary_size - 1)
         else:
@@ -74,6 +85,7 @@ class TextBasedPreprocessor(object):
 
         count.extend(vocab_counter)
 
+        # building mete-data that can map word to index
         for word, word_count in count:
             current_index = len(self._word_to_index_map)
             self._word_to_index_map[word] = current_index
@@ -81,10 +93,16 @@ class TextBasedPreprocessor(object):
 
     @staticmethod
     def _build_word_to_index_map_worker(corpora_file):
+        """
+        Turn word string in file to word counter, for get word counter of corpus
+
+        :param corpora_file: string, input file
+        :return: word counter
+        """
         vocabulary = []
         with open(corpora_file, 'rt') as fd:
             for line in fd:
-                clean_line = line.strip()
+                clean_line = line.strip()  # remove head and tail empty chars, just in case
                 line_word = clean_line.split()
                 vocabulary.extend(line_word)
 

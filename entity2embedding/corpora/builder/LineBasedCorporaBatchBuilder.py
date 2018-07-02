@@ -27,10 +27,13 @@ CURRENT_DIR = os.path.dirname(
 
 def build_worker_func_wrapper(args):
     instance = args[0]
-    return instance.build_worker(args[1])
+    return instance._build_worker(args[1])
 
 
 class LineBasedCorporaBatchBuilder(object):
+    """
+    batch executor for map each file onto LineBasedCorporaBuilder
+    """
     def __init__(self, corpora_file_list, output_dir,
                  metadata_file,
                  skip_window=3, record_delimiter=','):
@@ -48,7 +51,11 @@ class LineBasedCorporaBatchBuilder(object):
         super(LineBasedCorporaBatchBuilder, self).__init__()
 
     def build(self):
-        build_results = list(map(self.build_worker, self.corpora_file_list))
+        """
+        the only execute entry point for this builder
+        :return:
+        """
+        build_results = list(map(self._build_worker, self.corpora_file_list))
         # FIXME: multi-process version has fatal bug in python3
         # pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
         # build_results = list(pool.imap_unordered(
@@ -59,7 +66,12 @@ class LineBasedCorporaBatchBuilder(object):
 
         self._write_metadata()
 
-    def build_worker(self, corpora_file):
+    def _build_worker(self, corpora_file):
+        """
+        build partial corpus for an input file
+        :param corpora_file: string, input corpora file
+        :return:
+        """
         output_file = os.path.join(self.output_dir,
                                    os.path.splitext(os.path.basename(corpora_file))[0] + ".tfrecord")
         print(output_file)

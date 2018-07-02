@@ -29,7 +29,7 @@ def create_argparser():
 if __name__ == "__main__":
     arg_parser = create_argparser()
     cmdline_args = {k: v
-                    for k, v in list(vars(arg_parser.parse_args()).items())
+                    for k, v in list(vars(arg_parser.parse_args()).items())  # using vars() to turn object attribute to dict
                     if v is not None}
 
     config = build_config(cmdline_args.get("config"), cmdline_args)

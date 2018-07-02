@@ -27,7 +27,7 @@ class LineBasedCorporaBuilder(BaseCorporaBuilder):
 
         super(LineBasedCorporaBuilder, self).__init__()
 
-    def do_line_process(self, record_string):
+    def _do_line_process(self, record_string):
         # type: (str) -> Any
         return self.line_processor.line_process(record_string)
 
@@ -36,7 +36,7 @@ class LineBasedCorporaBuilder(BaseCorporaBuilder):
         with open(self.corpora_file, 'rt') as fd:
             line_result_list = functools.reduce(
                 lambda x, y: x + y,
-                map(self.do_line_process, fd)
+                map(self._do_line_process, fd)
             )
             self._data.extend(line_result_list)
 
