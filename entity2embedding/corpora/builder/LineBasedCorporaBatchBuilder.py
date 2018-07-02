@@ -55,12 +55,13 @@ class LineBasedCorporaBatchBuilder(object):
         the only execute entry point for this builder
         :return:
         """
-        build_results = list(map(self._build_worker, self.corpora_file_list))
-        # FIXME: multi-process version has fatal bug in python3
-        # pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
-        # build_results = list(pool.imap_unordered(
-        #     build_worker_func_wrapper,
-        #     zip_longest([self], self.corpora_file_list, fillvalue=self)))
+
+        # single-process based worker is replaced by multi-process based solution (see below)
+        # build_results = list(map(self._build_worker, self.corpora_file_list))
+
+        build_results = Parallel(n_jobs=-1)(
+            delayed(self._build_worker)(i) for i in self.corpora_file_list
+        )
 
         self.epoch_size = functools.reduce(lambda x, y: x + y, build_results)
 

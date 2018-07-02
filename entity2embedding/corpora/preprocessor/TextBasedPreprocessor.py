@@ -1,8 +1,9 @@
 import collections
 import csv
-import multiprocessing
 import functools
 import os
+
+from joblib import Parallel, delayed
 
 try:
     import cPickle as pickle
@@ -57,16 +58,19 @@ class TextBasedPreprocessor(object):
         self._write_metadata()
 
     def _build_word_to_index_map(self):
-        counter_iter = map(self._build_word_to_index_map_worker, self.corpora_file_list)
-        counter_list = list(counter_iter)
-        # FIXME: multi-process version not work
-        # pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
-        # counter_list = pool.imap_unordered(
-        #     _build_word_to_index_map_worker_func_wrapper,
-        #     self.corpora_file_list)
+        # single-process based worker is replaced by multi-process based solution (see below)
+        # counter_iter = map(self._build_word_to_index_map_worker, self.corpora_file_list)
+        # counter_list = list(counter_iter)
 
-        # TODO: counter + counter is slow, using update maybe better
-        counter = functools.reduce(lambda x, y: x + y, counter_list)
+        counter_list = Parallel(n_jobs=-1)(
+            delayed(self._build_word_to_index_map_worker)(i) for i in self.corpora_file_list
+        )
+
+        # NOTE: counter + counter is slow, using update maybe better
+        def reduce_updater(x, y):
+            x.update(y)
+            return x
+        counter = functools.reduce(reduce_updater, counter_list)
 
         # add special word 'UNK' stand for unknown words, assign -1 as it's count
         count = [['UNK', -1]]
@@ -109,12 +113,12 @@ class TextBasedPreprocessor(object):
         return collections.Counter(vocabulary)
 
     def _build_corpora_data(self):
-        unk_counter_list = list(map(self._build_corpora_data_worker, self.corpora_file_list))
-        # FIXME: multi-processing version don't work
-        # pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
-        # unk_counter_list = list(pool.imap_unordered(
-        #     _build_word_to_index_map_worker_func_wrapper,
-        #     self.corpora_file_list))
+        # single-process based worker is replaced by multi-process based solution (see below)
+        # unk_counter_list = list(map(self._build_corpora_data_worker, self.corpora_file_list))
+
+        unk_counter_list = Parallel(n_jobs=-1)(
+            delayed(self._build_corpora_data_worker)(i) for i in self.corpora_file_list
+        )
 
         # index 0 means 'UNK'
         self._index_to_word_count_list[0] = sum(unk_counter_list)
