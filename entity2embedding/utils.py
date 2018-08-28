@@ -6,7 +6,10 @@ import os
 def list_unhidden_file_in_dir(input_dir):
     all_children = [os.path.join(input_dir, f) for f in os.listdir(input_dir)]
     all_files = filter(os.path.isfile, all_children)
-    all_unhidden_files = filter(lambda x: not x.startswith('.'), all_files)
+    all_unhidden_files = filter(
+        lambda x: not os.path.basename(x).startswith('.'),
+        all_files
+    )
     return list(all_unhidden_files)
 
 
