@@ -46,6 +46,10 @@ if __name__ == "__main__":
     else:
         source = [source]
 
+    print("source:")
+    for file in source:
+        print(file)
+
     for f in source:
         shutil.copy(f, project['RAW_DATA_DIR'])
 
