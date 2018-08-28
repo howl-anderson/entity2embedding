@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 import functools
 import os
-import multiprocessing
 import pickle
+
+from joblib import Parallel, delayed
 
 try:
     from itertools import izip_longest as zip_longest
