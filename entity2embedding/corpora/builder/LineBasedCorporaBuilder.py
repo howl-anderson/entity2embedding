@@ -31,8 +31,7 @@ class LineBasedCorporaBuilder(BaseCorporaBuilder):
         # type: (str) -> Any
         return self.line_processor.line_process(record_string)
 
-    def build(self):
-        # type: () -> int
+    def build(self) -> int:
         with open(self.corpora_file, 'rt') as fd:
             line_result_list = functools.reduce(
                 lambda x, y: x + y,

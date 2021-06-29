@@ -1,18 +1,15 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import warnings
 
-from typing import (
-    Any
-)
+from typing import Any
 
 from .BaseLineProcessor import BaseLineProcessor
-from .window_frame_extract import window_frame_extract
+from entity2embedding.corpora.builder.window_frame_extract import window_frame_extract
 
 
 class ContextWindowBasedLineProcessor(BaseLineProcessor):
-    def __init__(self, skip_window=3, record_delimiter=' '):
+    def __init__(self, skip_window=3, record_delimiter=" "):
         self.skip_window = skip_window
         self.record_delimiter = record_delimiter
 
@@ -31,4 +28,3 @@ class ContextWindowBasedLineProcessor(BaseLineProcessor):
         record_list = list(map(lambda x: int(x), record_list))
 
         return window_frame_extract(record_list, self.skip_window)
-

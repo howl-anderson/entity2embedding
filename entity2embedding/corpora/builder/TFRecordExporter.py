@@ -19,5 +19,5 @@ class TFRecordExporter(BaseDataExporter):
 
         record_string_iterator = map(translate_func, data)
 
-        with tf.python_io.TFRecordWriter(output_file) as writer:
+        with tf.io.TFRecordWriter(output_file) as writer:
             list(map(writer.write, record_string_iterator))

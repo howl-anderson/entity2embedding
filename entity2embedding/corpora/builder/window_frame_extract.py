@@ -1,7 +1,10 @@
 import collections
+from typing import List, Any, Tuple
 
 
-def window_frame_extract(record_list, skip_window):
+def window_frame_extract(
+    record_list: List[Any], skip_window: int
+) -> List[Tuple[Any, Any]]:
     target_buffer = []
     context_buffer = []
 
@@ -23,8 +26,9 @@ def window_frame_extract(record_list, skip_window):
     center_index_of_window = skip_window
 
     while True:
-        context_range = list(range(0, skip_window)) \
-                      + list(range(skip_window + 1, window_span))
+        context_range = list(range(0, skip_window)) + list(
+            range(skip_window + 1, window_span)
+        )
         for i in context_range:
             context_word = window[i]
 
@@ -47,7 +51,7 @@ def window_frame_extract(record_list, skip_window):
 
     return list(zip(target_buffer, context_buffer))
 
-
+ 
 if __name__ == "__main__":
     result = window_frame_extract(["王小明", "在", "北京", "的", "清华大学", "读书"], 1)
     print(result)

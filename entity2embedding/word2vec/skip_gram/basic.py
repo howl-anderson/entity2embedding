@@ -10,7 +10,7 @@ import os
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.tensorboard.plugins import projector
+from tensorboard.plugins import projector
 
 logger = logging.getLogger(__name__)
 
