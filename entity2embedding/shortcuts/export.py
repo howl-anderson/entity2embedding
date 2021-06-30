@@ -13,8 +13,9 @@ from entity2embedding.word2vec.skip_gram.basic import BasicWord2vec
 
 def create_argparser():
     parser = argparse.ArgumentParser(description="Parse arguments")
-    parser.add_argument('-p', '--project',
-                        help="Directory where to write project files.")
+    parser.add_argument(
+        "-p", "--project", help="Directory where to write project files."
+    )
 
     return parser
 
@@ -23,7 +24,7 @@ def export(log_dir, output_file):
     latest_checkpoint = tf.train.latest_checkpoint(log_dir)
 
     with tf.Session() as sess:
-        meta_graph_file = '.'.join([latest_checkpoint, "meta"])
+        meta_graph_file = ".".join([latest_checkpoint, "meta"])
         saver = tf.train.import_meta_graph(meta_graph_file)
 
         saver.restore(sess, latest_checkpoint)
@@ -31,11 +32,11 @@ def export(log_dir, output_file):
         BasicWord2vec.export_as_gensim_word2vec_format(sess.graph, sess, output_file)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     arg_parser = create_argparser()
-    cmdline_args = {k: v
-                    for k, v in list(vars(arg_parser.parse_args()).items())
-                    if v is not None}
+    cmdline_args = {
+        k: v for k, v in list(vars(arg_parser.parse_args()).items()) if v is not None
+    }
 
     config = build_config(cmdline_args.get("config"), cmdline_args)
 
@@ -45,4 +46,4 @@ if __name__ == '__main__':
 
     project = load_project_structure(project_dir)
 
-    export(project['LOG_DIR'], project['GENSIM_EXPORT_FILE'])
+    export(project["LOG_DIR"], project["GENSIM_EXPORT_FILE"])

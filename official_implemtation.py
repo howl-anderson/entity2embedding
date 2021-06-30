@@ -1,13 +1,19 @@
 import io
+import json
 import re
 import string
+import pathlib
 
 import tensorflow as tf
-import tqdm
+import numpy as np
 
 num_ns = 4
 SEED = 42
 AUTOTUNE = tf.data.AUTOTUNE
+# Define the vocabulary size and number of words in a sequence.
+vocab_size = 40960
+# sequence_length = 10
+sequence_length = None
 
 
 # Generates skip-gram pairs with negative sampling for a list of sequences
@@ -18,7 +24,7 @@ def generate_training_data(sequences, window_size, num_ns, vocab_size, seed):
     sampling_table = tf.keras.preprocessing.sequence.make_sampling_table(vocab_size)
 
     # Iterate over all sequences (sentences) in dataset.
-    for sequence in tqdm.tqdm(sequences):
+    for sequence in sequences:
 
         # Generate positive skip-gram pairs for a sequence (sentence).
         positive_skip_grams, _ = tf.keras.preprocessing.sequence.skipgrams(
@@ -59,11 +65,18 @@ def generate_training_data(sequences, window_size, num_ns, vocab_size, seed):
             yield (target, context), label
 
 
-path_to_file = tf.keras.utils.get_file(
-    "shakespeare.txt",
-    "https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt",
-)
-# path_to_file = "./text8"
+# path_to_file = tf.keras.utils.get_file(
+#     "shakespeare.txt",
+#     "https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt",
+# )
+path_to_file = "./text8"
+# path_to_file = [
+#     i
+#     for i in pathlib.Path(
+#         "/home/howl/data/BigPycharmProjects/chinese-wikipedia-corpus-creator/token_cleaned_plain_files"
+#     ).rglob("*")
+#     if i.is_file()
+# ]
 
 text_ds = tf.data.TextLineDataset(path_to_file)
 # filter out empty line
@@ -78,10 +91,6 @@ def custom_standardization(input_data):
     )
 
 
-# Define the vocabulary size and number of words in a sequence.
-vocab_size = 4096
-sequence_length = None
-
 # Use the text vectorization layer to normalize, split, and map strings to
 # integers. Set output_sequence_length length to pad all samples to same length.
 vectorize_layer = tf.keras.layers.experimental.preprocessing.TextVectorization(
@@ -94,7 +103,8 @@ vectorize_layer = tf.keras.layers.experimental.preprocessing.TextVectorization(
 vectorize_layer.adapt(text_ds.batch(1024))
 # Save the created vocabulary for reference.
 inverse_vocab = vectorize_layer.get_vocabulary()
-print(inverse_vocab[:20])
+with open("vocabulary.json", "wt") as fd:
+    json.dump(inverse_vocab, fd)
 
 # Vectorize the data in text_ds.
 text_vector_ds = text_ds.batch(1024).prefetch(AUTOTUNE).map(vectorize_layer).unbatch()
@@ -111,7 +121,7 @@ dataset = tf.data.Dataset.from_generator(
     lambda: traning_data_generator,
     output_signature=(
         (
-            tf.TensorSpec(shape=(1,), dtype=tf.int64),
+            tf.TensorSpec(shape=(1,), dtype=tf.int32),
             tf.TensorSpec(shape=(5, 1), dtype=tf.int64),
         ),
         tf.TensorSpec(shape=(5,), dtype=tf.int64),
@@ -156,4 +166,30 @@ word2vec.compile(
 
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="logs")
 
-word2vec.fit(dataset, epochs=20, callbacks=[tensorboard_callback])
+# word2vec.fit(dataset, epochs=20, callbacks=[tensorboard_callback])
+word2vec.fit(dataset, epochs=10, callbacks=[tensorboard_callback])
+# word2vec.save("./model")
+
+weights = word2vec.get_layer("w2v_embedding").get_weights()[0]
+
+# drop the first token which is known as padding ('')
+visiable_weights = weights[1:]
+visiable_vocab = inverse_vocab[1:]
+
+
+with open("gensim_model.txt", "wt") as fd:
+    fd.write("{} {}".format(len(visiable_vocab), visiable_weights.shape[1]))
+    for i, token in enumerate(
+        visiable_vocab
+    ):
+        vec = visiable_weights[i]
+        fd.write("\n")
+        fd.write(token)
+        fd.write(" ")
+        fd.write(" ".join([str(num) for num in vec]))
+
+with open("vectors.tsv", "wt") as out_v, open("metadata.tsv", "wt") as out_m:
+    for index, word in enumerate(visiable_vocab):
+        vec = visiable_weights[index]
+        out_v.write('\t'.join([str(x) for x in vec]) + "\n")
+        out_m.write(word + "\n")
